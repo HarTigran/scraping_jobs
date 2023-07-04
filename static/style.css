@@ -1,0 +1,65 @@
+.container {
+    margin: auto;
+    width: 50%;
+    padding-top: 50px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+td:nth-child(10) {
+    width: 10%;
+}
+
+.save-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #218838;
+}
+
+.view-my-job-list-link {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 14px;
+    z-index: 9999;
+  }
+  
+  .view-my-job-list-link:hover {
+    background-color: #0056b3;
+  }
+  
+  .view-my-job-list-link i {
+    margin-right: 5px;
+  }
+  

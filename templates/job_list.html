@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f7f9;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        .action-button {
+            background-color: transparent;
+            border: none;
+            padding: 6px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .action-button i {
+            display: none;
+        }
+
+        .action-button span {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            padding-left: 10px;
+            display: none;
+            transform: translateY(-50%);
+        }
+
+        .action-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .action-button:hover i {
+            display: inline-block;
+        }
+
+        .action-button:hover span {
+            display: inline-block;
+        }
+
+        .job-list-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .job-list-title {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .job-list-link {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        .job-list-link:hover {
+            text-decoration: underline;
+        }
+
+        .add-to-job-list-button {
+            background-color: transparent;
+            color: #28a745;
+            border: none;
+            padding: 6px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            float: right;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .add-to-job-list-button i {
+            display: inline-block;
+        }
+
+        .add-to-job-list-button span {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            padding-left: 5px;
+            display: none;
+            transform: translateY(-50%);
+            white-space: nowrap;
+        }
+
+        .add-to-job-list-button:hover {
+            color: #1e7e34;
+        }
+
+        .add-to-job-list-button:hover span {
+            display: inline-block;
+        }
+
+
+        .row-selected {
+            background-color: #007bff !important;
+            color: #fff !important;
+        }
+
+        .row-already-added {
+            background-color: #ffc107 !important;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            color: #d32f2f;
+            border: none;
+            padding: 6px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-top: 10px;
+            float: right;
+        }
+
+        .logout-button:hover {
+            background-color: #d32f2f;
+            color: #fff;
+        }
+
+        /* Additional CSS for the "View My Job List" link */
+        .view-my-job-list-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border-radius: 3px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+            z-index: 9999;
+        }
+
+        .view-my-job-list-link:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="job-list-container">
+        <h1 class="job-list-title">Job Listings</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Tag</th>
+                    <th>Link</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in job_listings %}
+                <tr>
+                    <td>{{ job.Title }}</td>
+                    <td>{{ job.Company }}</td>
+                    <td>{{ job.Location }}</td>
+                    <td>{{ job.Tag }}</td>
+                    <td><a class="job-list-link" href="{{ job.Link }}">{{ job.Link }}</a></td>
+                    <td>
+                        <form action="{{ url_for('job_list') }}" method="POST">
+                            <input type="hidden" name="title" value="{{ job.Title }}">
+                            <input type="hidden" name="company" value="{{ job.Company }}">
+                            <input type="hidden" name="location" value="{{ job.Location }}">
+                            <input type="hidden" name="tag" value="{{ job.Tag }}">
+                            <input type="hidden" name="link" value="{{ job.Link }}">
+                            <button class="action-button add-to-job-list-button" type="submit" data-title="{{ job.Title }}">
+                                <i class="fas fa-plus"></i> <span>Add to My Job List</span>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('my_job_list') }}" class="view-my-job-list-link">
+            <i class="fas fa-list"></i> View My Job List
+        </a>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button class="logout-button" type="submit">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const tableRows = document.querySelectorAll('tbody tr');
+        const myJobList = [
+            // Add job titles from "My Job List" as strings
+            // e.g., 'Software Engineer', 'Project Manager', etc.
+            'Software Engineer',
+            'Project Manager'
+        ];
+
+        tableRows.forEach(row => {
+            const jobTitle = row.querySelector('td:first-child').textContent.trim();
+
+            // Check if the job title exists in the "My Job List"
+            if (myJobList.includes(jobTitle)) {
+                row.classList.add('row-selected');
+            }
+
+            // Check if the job title exists in the database table
+            {% if job_titles %}
+            const jobTitlesFromTable = [
+                // Add job titles from the table as strings
+                {% for title in job_titles %}
+                '{{ title }}',
+                {% endfor %}
+            ];
+
+            if (jobTitlesFromTable.includes(jobTitle)) {
+                row.classList.add('row-already-added');
+            }
+            {% endif %}
+        });
+    </script>
+</body>
+</html>
