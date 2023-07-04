@@ -1,0 +1,2 @@
+runtime: python39
+entrypoint: pip install -r requirements.txt && python app.py
