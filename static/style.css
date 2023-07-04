@@ -53,13 +53,32 @@ td:nth-child(10) {
     text-decoration: none;
     font-size: 14px;
     z-index: 9999;
-  }
-  
-  .view-my-job-list-link:hover {
+}
+
+.view-my-job-list-link:hover {
     background-color: #0056b3;
-  }
-  
-  .view-my-job-list-link i {
+}
+
+.view-my-job-list-link i {
     margin-right: 5px;
-  }
-  
+}
+
+.survey-button-container {
+    position: fixed;
+    bottom: 80px; /* Adjust the value as needed */
+    left: 20px; /* Adjust the value as needed */
+    z-index: 9999;
+}
+
+.survey-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.survey-button:hover {
+    opacity: 0.8;
+}
