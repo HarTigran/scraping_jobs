@@ -352,23 +352,5 @@
             {% endif %}
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Handle job filter change event
-            $('#job-filter').on('change', function() {
-                var filterValue = $(this).val();
-    
-                // Show/hide rows based on the selected filter
-                if (filterValue === 'all') {
-                    $('tbody tr').show();
-                } else {
-                    $('tbody tr').hide();
-                    $('tbody tr[data-category="' + filterValue + '"]').show();
-                }
-            });
-        });
-    </script>
-
 </body>
 </html>
