@@ -144,6 +144,9 @@
         }
 
         .logout-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             background-color: transparent;
             color: #d32f2f;
             border: none;
@@ -160,14 +163,33 @@
             color: #fff;
         }
 
-        /* Additional CSS for the "View My Job List" link */
-        .view-my-job-list-link {
+        .survey-button {
             position: fixed;
-            bottom: 20px;
+            bottom: 120px;
             right: 20px;
             background-color: #007bff;
             color: #fff;
             padding: 10px;
+            width: 150px; /* Add the desired width */
+            border-radius: 3px;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+            z-index: 9999;
+        }
+
+        .survey-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Additional CSS for the "View My Job List" link */
+        .view-my-job-list-link {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            width: 150px; /* Add the same width as the survey button */
             border-radius: 3px;
             text-decoration: none;
             transition: opacity 0.3s ease;
@@ -177,11 +199,79 @@
         .view-my-job-list-link:hover {
             opacity: 0.8;
         }
+
+        .filter-container {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: border-color 0.3s ease;
+            font-size: 14px;
+        }
+
+        select:focus {
+            border-color: #007bff;
+        }
+
+        /* Custom Dropdown Styling */
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .select-wrapper::after {
+            content: '\25BE';
+            font-size: 12px;
+            color: #888;
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .select-wrapper select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: transparent;
+            padding-right: 25px;
+            cursor: pointer;
+        }
+
+        .select-wrapper select::-ms-expand {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
     <div class="job-list-container">
         <h1 class="job-list-title">Job Listings</h1>
+        <div class="filter-container">
+            <label for="job-filter">Show Only:</label>
+            <select id="job-filter">
+                <option value="all">All</option>
+                <option value="full-time">Full Time</option>
+                <option value="internship">Internship</option>
+                <option value="fellowship">Fellowship</option>
+                <option value="backet-1">Backet 1</option>
+                <option value="backet-2">Backet 2</option>
+            </select>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -217,11 +307,11 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{{ url_for('my_job_list') }}" class="view-my-job-list-link">
-            <i class="fas fa-list"></i> View My Job List
-        </a>
         <a href="https://kp1p693n6ma.typeform.com/to/tzRT9BgB" class="survey-button" target="_blank">
             <i class="fas fa-list"></i> Take the Survey
+        </a>
+        <a href="{{ url_for('my_job_list') }}" class="view-my-job-list-link">
+            <i class="fas fa-list"></i> View My Job List
         </a>
         <form action="{{ url_for('logout') }}" method="POST">
             <button class="logout-button" type="submit">
@@ -262,5 +352,23 @@
             {% endif %}
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle job filter change event
+            $('#job-filter').on('change', function() {
+                var filterValue = $(this).val();
+    
+                // Show/hide rows based on the selected filter
+                if (filterValue === 'all') {
+                    $('tbody tr').show();
+                } else {
+                    $('tbody tr').hide();
+                    $('tbody tr[data-category="' + filterValue + '"]').show();
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
