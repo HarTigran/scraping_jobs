@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask import Flask, render_template, request, redirect, url_for, session, make_response
 import csv
 import sqlite3
 import secrets
@@ -46,10 +46,11 @@ def initialize_database():
             company TEXT,
             location TEXT,
             tag TEXT,
+            job_type TEXT,
             link TEXT,
             deadline TEXT,
-            requirements TEXT,
-            outcome TEXT,
+            notes TEXT,
+            final_outcome TEXT,
             action TEXT,
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
@@ -156,6 +157,7 @@ def job_list():
         company = request.form['company']
         location = request.form['location']
         tag = request.form['tag']
+        job_type = request.form['job_type']
         link = request.form['link']
 
         # Connect to the SQLite database
@@ -173,9 +175,9 @@ def job_list():
 
         # Insert the new job into the database
         cursor.execute('''
-            INSERT INTO jobs (user_id, title, company, location, tag, link)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (current_user.id, title, company, location, tag, link))
+            INSERT INTO jobs (user_id, title, company, location, tag, job_type, link)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (current_user.id, title, company, location, tag, job_type, link))
 
         # Commit the changes
         conn.commit()
@@ -194,22 +196,23 @@ def job_list():
 
     return render_template('job_list.html', job_listings=job_listings)
 
+
 @app.route('/my_job_list', methods=['GET', 'POST'])
 @login_required
 def my_job_list():
     if request.method == 'POST':
         job_id = request.form['job_id']
-        outcome = request.form.get('outcome', '')
-        deadline = request.form.get('deadline', '')  # Retrieve the 'deadline' value from the form data
+        final_outcome = request.form.get('final_outcome', '')
+        deadline = request.form.get('deadline', '')
         action = request.form.get('action', '')
-        requirements = request.form.get('requirements', '')
+        notes = request.form.get('notes', 'Add your notes here')
 
         # Connect to the SQLite database
         conn = sqlite3.connect('user_database.db')
         cursor = conn.cursor()
 
-        # Update the job outcome and deadline in the database
-        cursor.execute('UPDATE jobs SET deadline = ?, requirements = ?, outcome = ?, action = ? WHERE job_id = ?', (deadline, requirements, outcome, action, job_id))
+        # Update the job final outcome, deadline, and notes in the database
+        cursor.execute('UPDATE jobs SET deadline = ?, notes = ?, final_outcome = ?, action = ? WHERE job_id = ?', (deadline, notes, final_outcome, action, job_id))
 
         # Commit the changes
         conn.commit()
@@ -217,80 +220,79 @@ def my_job_list():
         # Close the connection
         conn.close()
 
-    # Connect to the SQLite database
-    conn = sqlite3.connect('user_database.db')
-    cursor = conn.cursor()
+    if 'deleted_job_id' in session:
+        # Remove the deleted job_id from the session
+        deleted_job_id = session.pop('deleted_job_id', None)
+        
+        # Connect to the SQLite database
+        conn = sqlite3.connect('user_database.db')
+        cursor = conn.cursor()
 
-    # Fetch the user's jobs from the database
-    cursor.execute('SELECT * FROM jobs WHERE user_id = ?', (current_user.id,))
-    user_jobs = cursor.fetchall()
+        # Fetch the user's jobs from the database excluding the deleted job
+        cursor.execute('SELECT * FROM jobs WHERE user_id = ? AND job_id != ?', (current_user.id, deleted_job_id))
+        user_jobs = cursor.fetchall()
 
-    # Close the connection
-    conn.close()
+        # Close the connection
+        conn.close()
+    else:
+        # Connect to the SQLite database
+        conn = sqlite3.connect('user_database.db')
+        cursor = conn.cursor()
+
+        # Fetch the user's jobs from the database
+        cursor.execute('SELECT * FROM jobs WHERE user_id = ?', (current_user.id,))
+        user_jobs = cursor.fetchall()
+
+        # Close the connection
+        conn.close()
 
     return render_template('my_job_list.html', user_jobs=user_jobs)
 
-@app.route('/update_job', methods=['POST'])
-@login_required
-def update_job():
-    job_id = request.form['job_id']
-    action = request.form['action']
 
-    # Connect to the SQLite database
-    conn = sqlite3.connect('user_database.db')
-    cursor = conn.cursor()
 
-    # Update the job action in the database
-    cursor.execute('UPDATE jobs SET action = ? WHERE job_id = ?', (action, job_id))
 
-    # Commit the changes
-    conn.commit()
+# @app.route('/update_job', methods=['POST'])
+# @login_required
+# def update_job():
+#     job_id = request.form['job_id']
+#     action = request.form['action']
 
-    # Close the connection
-    conn.close()
+#     # Connect to the SQLite database
+#     conn = sqlite3.connect('user_database.db')
+#     cursor = conn.cursor()
 
-    return redirect(url_for('my_job_list'))
+#     # Update the job action in the database
+#     cursor.execute('UPDATE jobs SET action = ? WHERE job_id = ?', (action, job_id))
 
-@app.route('/update_deadline', methods=['POST'])
-def update_deadline():
-    job_id = request.json.get('jobId')
-    deadline = request.json.get('deadline')
+#     # Commit the changes
+#     conn.commit()
 
-    # Connect to the SQLite database
-    conn = sqlite3.connect('user_database.db')
-    cursor = conn.cursor()
+#     # Close the connection
+#     conn.close()
 
-    # Update the deadline in the jobs table for the specified job_id
-    cursor.execute('UPDATE jobs SET deadline = ? WHERE job_id = ?', (deadline, job_id))
+#     return redirect(url_for('my_job_list'))
 
-    # Commit the changes
-    conn.commit()
+# @app.route('/update_deadline', methods=['POST'])
+# def update_deadline():
+#     job_id = request.json.get('jobId')
+#     deadline = request.json.get('deadline')
 
-    # Close the connection
-    conn.close()
+#     # Connect to the SQLite database
+#     conn = sqlite3.connect('user_database.db')
+#     cursor = conn.cursor()
 
-    return jsonify(success=True)
+#     # Update the deadline in the jobs table for the specified job_id
+#     cursor.execute('UPDATE jobs SET deadline = ? WHERE job_id = ?', (deadline, job_id))
 
-@app.route('/delete_job', methods=['POST'])
-def delete_job():
-    job_id = request.form['job_id']
-    print(job_id)
+#     # Commit the changes
+#     conn.commit()
 
-    # Connect to the SQLite database
-    conn = sqlite3.connect('user_database.db')
-    cursor = conn.cursor()
+#     # Close the connection
+#     conn.close()
 
-    # Delete the job row with the specified job_id
-    cursor.execute("DELETE FROM jobs WHERE job_id = ?", (job_id,))
-    conn.commit()
-
-    # Close the database connection
-    cursor.close()
-    conn.close()
-
-    # Redirect back to the job list page
-    return redirect('/job_list')
+#     return jsonify(success=True)
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
+    # port = int(os.environ.get('PORT', 5000))
+    # app.run(host='0.0.0.0', port=port)

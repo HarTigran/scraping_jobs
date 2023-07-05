@@ -26,6 +26,10 @@
             padding: 10px;
             text-align: left;
         }
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 15%; /* Adjust the width as desired */
+        }
 
         thead {
             background-color: #007bff;
@@ -262,14 +266,13 @@
     <div class="job-list-container">
         <h1 class="job-list-title">Job Listings</h1>
         <div class="filter-container">
-            <label for="job-filter">Show Only:</label>
-            <select id="job-filter">
+            <label for="type-filter">Type:</label>
+            <select id="type-filter">
                 <option value="all">All</option>
-                <option value="full-time">Full Time</option>
-                <option value="internship">Internship</option>
-                <option value="fellowship">Fellowship</option>
-                <option value="backet-1">Backet 1</option>
-                <option value="backet-2">Backet 2</option>
+            </select>
+            <label for="tag-filter">Tag:</label>
+            <select id="tag-filter">
+                <option value="all">All</option>
             </select>
         </div>
         <table>
@@ -279,6 +282,7 @@
                     <th>Company</th>
                     <th>Location</th>
                     <th>Tag</th>
+                    <th>Type</th>
                     <th>Link</th>
                     <th>Action</th>
                 </tr>
@@ -290,13 +294,15 @@
                     <td>{{ job.Company }}</td>
                     <td>{{ job.Location }}</td>
                     <td>{{ job.Tag }}</td>
-                    <td><a class="job-list-link" href="{{ job.Link }}">{{ job.Link }}</a></td>
+                    <td>{{ job.Type }}</td>
+                    <td><a class="job-list-link" href="{{ job.Link }}">View</a></td>
                     <td>
                         <form action="{{ url_for('job_list') }}" method="POST">
                             <input type="hidden" name="title" value="{{ job.Title }}">
                             <input type="hidden" name="company" value="{{ job.Company }}">
                             <input type="hidden" name="location" value="{{ job.Location }}">
                             <input type="hidden" name="tag" value="{{ job.Tag }}">
+                            <input type="hidden" name="job_type" value="{{ job.Type }}">
                             <input type="hidden" name="link" value="{{ job.Link }}">
                             <button class="action-button add-to-job-list-button" type="submit" data-title="{{ job.Title }}">
                                 <i class="fas fa-plus"></i> <span>Add to My Job List</span>
@@ -319,38 +325,64 @@
             </button>
         </form>
     </div>
-
     <script>
         const tableRows = document.querySelectorAll('tbody tr');
-        const myJobList = [
-            // Add job titles from "My Job List" as strings
-            // e.g., 'Software Engineer', 'Project Manager', etc.
-            'Software Engineer',
-            'Project Manager'
-        ];
+        const typeFilter = document.getElementById('type-filter');
+        const tagFilter = document.getElementById('tag-filter');
 
-        tableRows.forEach(row => {
-            const jobTitle = row.querySelector('td:first-child').textContent.trim();
+        function populateDropdownOptions(columnIndex, dropdown) {
+            const options = new Set();
 
-            // Check if the job title exists in the "My Job List"
-            if (myJobList.includes(jobTitle)) {
-                row.classList.add('row-selected');
-            }
+            tableRows.forEach(row => {
+                const cellValue = row.querySelectorAll('td')[columnIndex].textContent.trim();
+                if (cellValue !== '') {
+                    options.add(cellValue);
+                }
+            });
 
-            // Check if the job title exists in the database table
-            {% if job_titles %}
-            const jobTitlesFromTable = [
-                // Add job titles from the table as strings
-                {% for title in job_titles %}
-                '{{ title }}',
-                {% endfor %}
-            ];
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                dropdown.appendChild(optionElement);
+            });
+        }
 
-            if (jobTitlesFromTable.includes(jobTitle)) {
-                row.classList.add('row-already-added');
-            }
-            {% endif %}
-        });
+        function applyFilters() {
+            const selectedType = typeFilter.value;
+            const selectedTag = tagFilter.value;
+
+            tableRows.forEach(row => {
+                const jobType = row.querySelector('td:nth-child(5)').textContent.trim();
+                const jobTag = row.querySelector('td:nth-child(4)').textContent.trim();
+
+                // Reset the row display to its original state
+                row.style.display = '';
+
+                // Apply the filter for the "Type" column
+                if (selectedType !== 'all' && jobType !== selectedType) {
+                    row.style.display = 'none';
+                }
+
+                // Apply the filter for the "Tag" column
+                if (selectedTag !== 'all' && jobTag !== selectedTag) {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Populate the dropdown options for the "Type" column
+        populateDropdownOptions(4, typeFilter);
+
+        // Populate the dropdown options for the "Tag" column
+        populateDropdownOptions(3, tagFilter);
+
+        // Apply filters on initial page load
+        applyFilters();
+
+        // Add event listeners to the filters
+        typeFilter.addEventListener('change', applyFilters);
+        tagFilter.addEventListener('change', applyFilters);
     </script>
 </body>
 </html>
