@@ -4,10 +4,14 @@
     <title>My Job List</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        body {
+    body {
             font-family: Arial, sans-serif;
             background-color: #f3f7f9;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         h1 {
@@ -27,6 +31,12 @@
             text-align: left;
         }
 
+        /* Adjust the width of Column Tag */
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 15%;
+        }
+
         thead {
             background-color: #28a745;
             color: #fff;
@@ -43,6 +53,11 @@
         .job-list-container {
             max-width: 800px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .job-list-title {
