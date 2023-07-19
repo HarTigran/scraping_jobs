@@ -264,7 +264,7 @@
 </head>
 <body>
     <div class="job-list-container">
-        <h1 class="job-list-title">Job Listings</h1>
+        <h1 class="job-list-title">Opportunity Portal</h1>
         <div class="filter-container">
             <label for="type-filter">Type:</label>
             <select id="type-filter">
@@ -314,10 +314,10 @@
             </tbody>
         </table>
         <a href="https://kp1p693n6ma.typeform.com/to/tzRT9BgB" class="survey-button" target="_blank">
-            <i class="fas fa-list"></i> Take the Survey
+            <i class="fas fa-poll"></i> Take the Survey
         </a>
         <a href="{{ url_for('my_job_list') }}" class="view-my-job-list-link">
-            <i class="fas fa-list"></i> View My Job List
+            <i class="fas fa-list"></i> My Dashboard
         </a>
         <form action="{{ url_for('logout') }}" method="POST">
             <button class="logout-button" type="submit">
