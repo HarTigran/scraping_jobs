@@ -1,0 +1,32 @@
+# name: Run Scripts and Deploy
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   run-scripts-and-deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.x  # Specify the Python version you need
+
+#       - name: Run Python Scripts
+#         run: |
+#           python script1.py
+#           python script2.py
+#           python script3.py
+
+#       - name: Deploy to AWS App Runner
+#         run: |
+#           # Add commands to deploy to AWS App Runner here
+#           # For example, you might use AWS CLI or other deployment tools
+#           # Make sure to configure your AWS credentials using secrets or environment variables
+
