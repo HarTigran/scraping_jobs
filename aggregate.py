@@ -16,7 +16,7 @@ if response.status_code == 200:
     job_listings = soup.find_all(class_=lambda c: c and "ListCard__ContainerLink-sc" in c)
 
     # Define the CSV file path
-    csv_file = 'job_listings_3.csv'
+    csv_file = 'job_listings_agg.csv'
 
     # Open the CSV file in write mode
     with open(csv_file, 'w', newline='', encoding='utf-8') as file:
@@ -28,38 +28,27 @@ if response.status_code == 200:
         # Process each job listing
         for job in job_listings:
             # Extract the job title
-            title = job.find(class_=lambda c: c and "ListCard__Title-sc" in c)
-            title = title.text.strip() if title else ''
+            title = job.find(class_='ListCard__Title-sc').text.strip()
 
             # Extract the company name
-            company = job.find(class_=lambda c: c and "ListCard__Subtitle-sc" in c)
-            company = company.text.strip() if company else ''
+            company = job.find(class_='ListCard__Subtitle-sc').text.strip()
 
             # Extract the location
-            location = job.find(class_=lambda c: c and "MetadataInfo__MetadataInfoStyle-hif7kv-1" in str(c))
-            location = location.text.strip() if location else ''
+            location = job.find(class_='MetadataInfo__MetadataInfoStyle-hif7kv-1').text.strip()
 
             # Extract the tag
-            tag = job.find(class_=lambda c: c and "Tag__StyledTag-sc" in c)
-            tag = tag.text.strip() if tag else ''
+            tag = job.find(class_='Tag__StyledTag-sc').text.strip()
 
-            # Extract the type
-            if "Volunteer" in title:
-                type = "Volunteer"
-            elif "Intern" in title:
-                type = "Intern"
-            elif "Fellow" in title:
-                type = "Fellow"
-            else:
-                type = "Full Time"
+            # Extract the type (full time, part time, intern)
+            job_type = job.find(class_='ListCard__Time-sc').text.strip()
 
             # Extract the link
-            link = 'https://climatebase.org' + job['href'] if job.has_attr('href') else ''
+            link = 'https://climatebase.org' + job.find('a')['href'] if job.find('a') else ''
 
             # Write the data to the CSV file
-            writer.writerow([title, company, location, tag, type, link])
+            writer.writerow([title, company, location, tag, job_type, link])
 
-    print(f'Job listings saved to {csv_file} successfully.')
+    print(f'Job listings from Climatebase saved to {csv_file} successfully.')
 
 else:
-    print('Failed to retrieve job listings. Status code:', response.status_code)
+    print('Failed to retrieve job listings from Climatebase. Status code:', response.status_code)
