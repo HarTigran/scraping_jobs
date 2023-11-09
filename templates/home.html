@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Link to an external CSS file for custom styles -->
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
+</head>
+<body>
+    <div class="container">
+        <div class="fixed-header">
+            <div class="page_name">
+                Home Page
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn"> Hello, {{ current_user.username }} <i class="fas fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('survey') }}" target="_blank">Take the Survey</a>
+                    <a href="{{ url_for('my_job_list') }}">My Dashboard</a>
+                    <a href="{{ url_for('job_list') }}">Opportunity Hub</a>
+                    <a href="{{ url_for('mentor') }}">Mentor Matching</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="home-content">
+            <!-- Updated Logo (smaller) -->
+            <img id="logo" src="/static/CLMT.png" alt="Your Logo">
+            <!-- Updated Slogan (positioned below the logo) -->
+            <h2 class="slogan">Transform your passion for sustainability into purpose</h2>
+            <div class="button-container">
+                <div class="button">
+                    <a href="{{ url_for('survey') }}" target="_blank">
+                        <img src="/static/survey.png" width="100" height="150" alt="Take Survey">
+                    </a>
+                </div>
+                <div class="button">
+                    <a href="{{ url_for('mentor') }}">
+                        <img src="/static/mentor.png" width="100" height="150" alt="Mentor Survey">
+                    </a>
+                </div>
+                <div class="button">
+                    <a href="{{ url_for('job_list') }}">
+                        <img src="/static/job-list.png" width="100" height="150" alt="Job List">
+                    </a>
+                </div>
+            </div>            
+        </div>
+    </div>
+</body>
+</html>

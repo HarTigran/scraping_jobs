@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Link to an external CSS file for custom styles -->
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
+</head>
+<body>
+    <div class="container">
+        <div class="fixed-header">
+            <div class="page_name">
+                Opportunity Hub
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn"> Hello, {{ current_user.username }} <i class="fas fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('survey') }}" target="_blank">Take the Survey</a>
+                    <a href="{{ url_for('my_job_list') }}">My Dashboard</a>
+                    <a href="{{ url_for('mentor') }}">Mentor Matching</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="filter-container">
+            <div class="filter-card">
+                <div class="filter-card-header">
+                    <h2>Filters</h2>
+                </div>
+                <div class="filters">
+                    <div class="filter">
+                        <label for="bucket-filter">Select Bucket:</label>
+                        <div class="custom-select">
+                            <select id="bucket-filter">
+                                <option value="all">_____________</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter">
+                        <label for="type-filter">Select Type:</label>
+                        <div class="custom-select">
+                            <select id="type-filter">
+                                <option value="all">_____________</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>             
+        <div class="job-cards-container">
+            <!-- Job Cards will be dynamically generated here -->
+        </div>
+    </div>
+    <script>
+        const jobListings = {{ job_listings | tojson | safe }};
+    </script>
+    <script src="/static/script.js"></script> <!-- Add any JavaScript file you need -->
+</body>
+</html>

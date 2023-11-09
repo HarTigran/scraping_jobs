@@ -1,80 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        form {
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            border-radius: 5px;
-            display: inline-block;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 3px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        p a {
-            color: #007bff;
-            text-decoration: none;
-        }
-    </style>
+    <title>CLMT Campus</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles_login.css"> <!-- Link the CSS file -->
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
 </head>
 <body>
-    <h1>Login</h1>
-    <form method="POST" action="/">
+    <!-- Updated Logo (smaller) -->
+    <img id="logo" src="/static/CLMT.png" alt="Your Logo">
+    
+    <!-- Updated Slogan (positioned below the logo) -->
+    <h2 style="margin-top: 100px;">Transform your passion for sustainability into purpose</h2>
+
+    <!-- Modern Signup Button -->
+    <button style="margin-top: 60px;" onclick="toggleForm()">Sign-in</button>
+
+    <!-- Login Form (initially hidden) -->
+    <form id="login-form" method="POST" action="/">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Login">
     </form>
+
     <p>Don't have an account? <a href="/register">Register</a></p>
+
+    <div class="svg-container">
+        <img class="svg-image" src="/static/Infographic for the 1st page of the tool  .svg" alt="Your SVG Image">
+    </div>
+
+    <script>
+        function toggleForm() {
+            var form = document.getElementById("login-form");
+            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+        }
+    </script>
 </body>
 </html>

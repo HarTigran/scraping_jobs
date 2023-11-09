@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mentor Matching</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Link to an external CSS file for custom styles -->
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
+</head>
+<body>
+    <div class="container">
+        <div class="fixed-header">
+            <div class="page_name">
+                Mentor Matching
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn"> Hello, {{ current_user.username }} <i class="fas fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('survey') }}" target="_blank">Take the Survey</a>
+                    <a href="{{ url_for('my_job_list') }}">My Dashboard</a>
+                    <a href="{{ url_for('job_list') }}">Opportunity Hub</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+        <div class="home-content">
+            <!-- Updated Logo (smaller) -->
+            <img id="logo" src="/static/CLMT.png" alt="Your Logo">
+            <!-- Updated Slogan (positioned below the logo) -->
+            <h2 class="slogan">Transform your passion for sustainability into purpose</h2>
+        </div>
+        <form method="POST" action="/process_data" id="data-form">
+            <div class="dropdown-container">
+                <!-- First Bucket and Tags -->
+                <div class="bucket">
+                    <select name="bucket1" id="bucket1">
+                        <option value="" disabled selected>Select a Bucket 1</option>
+                        {% for bucket in buckets %}
+                            <option value="{{ bucket }}">{{ bucket }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="tag1" id="tag1" multiple>
+                        <option value="" disabled>Select Tag(s) for Bucket 1</option>
+                    </select>
+                </div>
+        
+                <!-- Second Bucket and Tags -->
+                <div class="bucket">
+                    <select name="bucket2" id="bucket2">
+                        <option value="" disabled selected>Select a Bucket 2</option>
+                        {% for bucket in buckets %}
+                            <option value="{{ bucket }}">{{ bucket }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="tag2" id="tag2" multiple>
+                        <option value="" disabled>Select Tag(s) for Bucket 2</option>
+                    </select>
+                </div>
+                <button type="button" id="submit-button" class="submit-button">Submit</button>
+            </div>
+        </form>
+        <div class="content">
+            <div id="result-container" class="result">
+                <!-- Result will be displayed here -->
+            </div>
+    
+            <div id="form-container" class="form-container hidden">
+                <form method="POST" action="/process_data" id="data-form">
+                    <!-- Your existing form elements (Bucket and Tag selection) here -->
+    
+                    <div class="user-details">
+                        <label for="full-name">Full Name:</label>
+                        <input type="text" id="full-name" name="full_name">
+                    </div>
+    
+                    <div class="user-details">
+                        <label for="linkedin-profile">LinkedIn Profile:</label>
+                        <input type="text" id="linkedin-profile" name="linkedin_profile">
+                    </div>
+    
+                    <div class="user-details">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}">
+                    </div>
+    
+                    <div class="user-details">
+                        <label for="short-bio">Short Bio:</label>
+                        <textarea id="short-bio" name="short_bio" rows="4"></textarea>
+                    </div>
+    
+                    <button type="button" id="get-intro-button" class="get-intro-button">Get an Intro</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        // JavaScript to update the "Tag" dropdowns based on the selected "Bucket" for both sets
+        const bucketDropdown1 = document.getElementById('bucket1');
+        const tagDropdown1 = document.getElementById('tag1');
+        const bucketDropdown2 = document.getElementById('bucket2');
+        const tagDropdown2 = document.getElementById('tag2');
+
+        function updateTagDropdown(bucketDropdown, tagDropdown) {
+            tagDropdown.innerHTML = ''; // Clear existing options
+            const selectedBucket = bucketDropdown.value;
+            const bucketTags = JSON.parse('{{ tags | tojson | safe }}')[selectedBucket];
+            if (bucketTags) {
+                for (const tag of bucketTags) {
+                    const option = document.createElement('option');
+                    option.value = tag;
+                    option.text = tag;
+                    tagDropdown.appendChild(option);
+                }
+            }
+        }
+
+        bucketDropdown1.addEventListener('change', function () {
+            updateTagDropdown(bucketDropdown1, tagDropdown1);
+        });
+
+        bucketDropdown2.addEventListener('change', function () {
+            updateTagDropdown(bucketDropdown2, tagDropdown2);
+        });
+
+
+        document.getElementById('submit-button').addEventListener('click', function () {
+            const form = document.getElementById('data-form');
+            const formData = new FormData(form);
+
+            // Send the form data to the server using AJAX
+            fetch('/process_data', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle a successful response
+                    return response.json(); // Parse the JSON response
+                } else {
+                    // Handle errors, if any
+                    console.error('Error submitting data');
+                    return Promise.reject('Error');
+                }
+            })
+            .then(data => {
+                // Handle the data and update the page content
+                const resultContainer = document.getElementById('result-container');
+                resultContainer.innerHTML = `Congratulations! You were matched with: ${data.result[0]}, ${data.result[1]} at ${data.result[2]}`;
+                // Show the form container
+                
+                const formContainer = document.getElementById('form-container');
+                formContainer.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('An error occurred:', error);
+            });
+        });
+
+        document.getElementById('get-intro-button').addEventListener('click', function () {
+            const resultContainer = document.getElementById('result-container');
+            const formContainer = document.getElementById('form-container');
+            const emailField = document.getElementById('email');
+            const fullNameField = document.getElementById('full-name');
+            const linkedInField = document.getElementById('linkedin-profile');
+            const shortBioField = document.getElementById('short-bio');
+
+            if (emailField.checkValidity()) {
+                // Email is valid, proceed to set the recipient's email
+                resultContainer.style.display = 'none';
+                formContainer.style.display = 'block';
+
+                // Set user's data in hidden input
+                const userEmailField = emailField.value;
+
+                // You can also collect other user data and use it as needed
+                const userFullName = fullNameField.value;
+                const userLinkedIn = linkedInField.value;
+                const userShortBio = shortBioField.value;
+
+                // Send the user data to the server for email sending
+                sendEmail(userFullName, emailField.value, userLinkedIn, userShortBio);
+            } else {
+                // Email is not valid, show an alert with an error message
+                alert('Please enter a valid email address.');
+            }
+        });
+        function sendEmail(fullName, userEmail, linkedIn, shortBio) {
+            fetch('/send_email', {
+                method: 'POST',
+                body: JSON.stringify({
+                    full_name: fullName,
+                    user_email: userEmail,
+                    linkedin_profile: linkedIn,
+                    short_bio: shortBio
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    return Promise.reject('Error');
+                }
+            })
+            .then(data => {
+                alert(data); // Display the response message
+            })
+            .catch(error => {
+                alert('An error occurred while sending the email.');
+            });
+        }
+    </script>
+</body>
+</html>

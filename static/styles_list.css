@@ -1,0 +1,162 @@
+/* Style for the dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float: right; /* To move it to the upper right corner */
+    margin: 10px;
+}
+
+/* Style for the dropdown button */
+.dropbtn {
+    background-color: #b4b8b9;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style for the dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0; /* Position the dropdown content to the right */
+}
+
+/* Adjust position for small screens if needed */
+@media screen and (max-width: 600px) {
+    .dropdown-content {
+        right: auto;
+        left: 0;
+    }
+}
+
+/* Style for the dropdown links */
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown content when hovering over the dropdown button */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Style for the dropdown button on hover */
+.dropdown:hover .dropbtn {
+    background-color: #2980b9;
+}
+
+
+/* Style for the fixed header */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #BADA55;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+/* Style for the page name in the header */
+.page_name {
+    color: #fff;
+    font-size: 24px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff; /* White content background */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.job-list-container {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.job-list {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #E2E2E2; /* Subtle border */
+    border-radius: 5px;
+}
+
+.job-list th {
+    background-color: #BADA55; /* Professional blue header for table */
+    color: #fff;
+    font-weight: bold;
+    padding: 15px 10px;
+    text-align: left;
+}
+
+.job-list th, .job-list td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+.job-list td.notes-cell {
+    min-height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.job-list tr:nth-child(even) {
+    background-color: #F7F7F7;
+}
+
+.job-list a.job-link {
+    text-decoration: none;
+    color: #0073e0;
+}
+
+.job-list input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #E2E2E2;
+    border-radius: 5px;
+}
+
+.job-list select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #E2E2E2;
+    border-radius: 5px;
+}
+
+.job-list .save-button {
+    background-color: #b4b8b9; /* Matching blue for buttons */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.job-list .save-button:hover {
+    background-color: #3574BB; /* Slightly darker blue on hover */
+}
+
+/* Adjust the Deadline input width */
+.job-list input[type="date"] {
+    width: 80%; /* Adjusted width to fit within the cell */
+}

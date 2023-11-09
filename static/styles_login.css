@@ -1,0 +1,128 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Make the body a positioning context */
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    display: none; /* Hide the "Login" text */
+}
+
+h2 {
+    color: #333;
+    font-size: 65px;
+    font-family: 'Syne', sans-serif;
+    max-width: 750px;
+    text-align: center;
+    margin: 0 auto;
+    position: relative; /* Make the slogan a positioning context */
+}
+
+#logo {
+    width: 330px;
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    z-index: 1; /* Bring the logo to the front */
+}
+
+form {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: left;
+    position: relative; /* Make the form a positioning context */
+    z-index: 1; /* Bring the form to the front */
+}
+
+#login-form {
+    display: none; /* Initially hidden */
+    max-width: 250px; /* Adjust the maximum width as needed */
+    margin: 20px auto; /* Move the form down a bit */
+}
+
+button {
+    background-color: #BADA55;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    z-index: 2; /* Bring the button to the front */
+}
+
+button:hover {
+    background-color: #A0C845;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+input[type="submit"] {
+    background-color: #BADA55;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    z-index: 2; /* Bring the button to the front */
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+    position: relative; /* Make the paragraph a positioning context */
+    z-index: 2; /* Bring the paragraph to the front */
+}
+
+p a {
+    color: #007bff;
+    text-decoration: none;
+    z-index: 2; /* Bring the link to the front */
+}
+
+/* Center and style the SVG image */
+.svg-container {
+    text-align: center;
+    position: relative; /* Make the SVG container a positioning context */
+    z-index: 0; /* Set a lower z-index for the SVG container */
+}
+
+.svg-image {
+    width: 950px; /* Adjust the width as needed */
+    height: 750px; /* Adjust the height as needed */
+    position: relative; /* Make the SVG image a positioning context */
+    z-index: -1; /* Set a lower z-index to push it to the back */
+    margin-top: -70px;
+}

@@ -1,0 +1,391 @@
+/* Style for the dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float: right; /* To move it to the upper right corner */
+    margin: 10px;
+}
+
+/* Style for the dropdown button */
+.dropbtn {
+    background-color: #b4b8b9;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Style for the dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0; /* Position the dropdown content to the right */
+}
+
+/* Adjust position for small screens if needed */
+@media screen and (max-width: 600px) {
+    .dropdown-content {
+        right: auto;
+        left: 0;
+    }
+}
+
+/* Style for the dropdown links */
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown content when hovering over the dropdown button */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Style for the dropdown button on hover */
+.dropdown:hover .dropbtn {
+    background-color: #2980b9;
+}
+
+
+/* Style for the fixed header */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #BADA55;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+/* Style for the page name in the header */
+.page_name {
+    color: #fff;
+    font-size: 24px;
+}
+
+/* Style for a container that holds the filter card */
+.filter-container {
+    margin-top: 80px; /* Adjust the top margin to provide space below the fixed header */
+}
+
+/* Style for the filter card */
+.filter-card {
+    background-color: #ffffff;
+    border: 1px solid #e1e9ec;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto 20px;
+    width: calc(100% - 600px); /* Set a maximum width for better readability */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the filter sections */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.filter {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+/* Style for the label */
+.filter label {
+    margin: 0;
+    white-space: nowrap;
+    margin-right: 10px;
+    font-weight: 500; /* Add some weight to the label text for better visibility */
+}
+
+/* Style for custom select dropdown */
+.custom-select {
+    width: 100%;
+}
+
+.custom-select select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #e1e9ec;
+    border-radius: 4px;
+    background-color: #f3f6f8;
+    color: #333;
+    cursor: pointer;
+    flex-grow: 1;
+}
+
+.custom-select select:focus {
+    outline: none;
+    border-color: #0077b5; /* LinkedIn's primary color */
+    background-color: #fff;
+}
+
+/* Custom arrow styling */
+.custom-select::after {
+    content: "\25BC";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+/* Dropdown transition effect */
+.custom-select select:hover {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.custom-select select:focus {
+    background-color: #fff;
+}
+
+
+
+/* Style for job cards */
+.job-card {
+    max-width: 100%;
+    display: flex;
+    background-color: #fff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto 20px;
+    width: calc(100% - 600px);
+    text-align: left;
+    transition: transform 0.3s;
+}
+
+.job-content {
+    display: flex;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+}
+
+.company-logo {
+    max-width: 200px;
+    margin-right: 20px;
+}
+
+.job-card h2 {
+    font-size: 20px;
+    margin: 10px 0;
+    color: #333;
+}
+
+.job-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.job-card-description {
+    font-size: 16px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.job-card-actions {
+    display: flex;
+    justify-content: flex-start; /* Align to the right */
+    align-items: flex-start; /* Align to the bottom */
+    /* margin-top: 10px; */
+}
+
+.job-card-actions a {
+    text-decoration: none;
+    color: #007bff;
+    margin-bottom: 10px;
+    margin-right: 10px; /* Add space between buttons */
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.job-card-actions a:hover {
+    color: #0056b3;
+}
+
+.slogan {
+    color: #333;
+    font-size: 55px;
+    font-family: 'Syne', sans-serif;
+    max-width: 750px;
+    text-align: center;
+    margin: 0 auto;
+    position: relative; /* Make the slogan a positioning context */
+    margin-top: 200px;
+}
+
+#logo {
+    width: 330px;
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    z-index: 1; /* Bring the logo to the front */
+}
+
+.button-container {
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    margin: 0; /* Reset margin to remove extra spacing */
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button img {
+    width: 225px; /* Adjust the width to make the images larger */
+    height: 300px; /* Adjust the height to make the images larger */
+}
+
+/* Style for Bucket and Tag dropdowns */
+.dropdown-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    padding: 0 60px;
+}
+
+.dropdowns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bucket,
+.tag-dropdown {
+    width: 350px; /* Increase the width to make the boxes wider */
+    margin-right: 15px; /* Adjust the margin to your preference */
+}
+
+select {
+    width: 100%;
+    padding: 7px;
+    border: 1px solid #BADA55;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+}
+
+select:focus {
+    border: 1px solid #3498db;
+    background-color: #fff;
+}
+
+/* Style for the Submit button */
+.submit-button {
+    background-color: #BADA55; /* Blue background color */
+    color: #fff; /* White text color */
+    border: none; /* Remove button border */
+    padding: 10px 20px; /* Add padding to the button */
+    font-size: 16px; /* Increase font size */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    /* float: right; */
+}
+
+/* Hover effect for the button */
+.submit-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Style for the content container */
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px; /* Adjust as needed */
+}
+
+/* Style for the result container */
+.result {
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+/* Style for the form container */
+.form-container {
+    border: 1px solid #fff;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    width: 20%;
+}
+
+    /* Style for input fields and labels */
+    .user-details {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-details label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .user-details input[type="text"],
+    .user-details input[type="email"],
+    .user-details textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 12px;
+        width: 100%;
+    }
+
+    .user-details input[type="text"],
+    .user-details input[type="email"] {
+        height: 20px;
+    }
+
+    .user-details textarea {
+        min-height: 100px;
+    }
+
+    /* Style for the "Get an Intro" button */
+    #get-intro-button {
+        background-color: #BADA55;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+.get-intro-button:hover {
+    background-color: #0056b3;
+}
+
+.hidden {
+    display: none;
+}

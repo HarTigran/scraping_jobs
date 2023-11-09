@@ -1,269 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Dashboard</title>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-    body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f7f9;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-
-        /* Adjust the width of Column Tag */
-        th:nth-child(4),
-        td:nth-child(4) {
-            width: 15%;
-        }
-
-        thead {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        th {
-            font-weight: bold;
-        }
-
-        tbody tr:nth-child(even) {
-            background-color: #f8f8f8;
-        }
-
-        .job-list-container {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .job-list-title {
-            color: #333;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .job-list-link {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 14px;
-        }
-
-        .job-list-link:hover {
-            text-decoration: underline;
-        }
-
-        .remove-job-button {
-            background-color: transparent;
-            color: #dc3545;
-            border: none;
-            padding: 6px 10px;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .remove-job-button i {
-            display: none;
-        }
-
-        .remove-job-button span {
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            padding-left: 5px;
-            display: none;
-            transform: translateY(-50%);
-            white-space: nowrap;
-        }
-
-        .remove-job-button:hover {
-            color: #a71d2a;
-        }
-
-        .remove-job-button:hover i {
-            display: inline-block;
-        }
-
-        .remove-job-button:hover span {
-            display: inline-block;
-        }
-
-        th:nth-child(6),
-        td:nth-child(6),
-        th:nth-child(7),
-        td:nth-child(7),
-        th:nth-child(8),
-        td:nth-child(8),
-        th:nth-child(9),
-        td:nth-child(9) {
-            width: 10%;
-        }
-
-        td[contenteditable="true"] {
-            outline: none;
-            background-color: #fff;
-            cursor: text;
-        }
-
-        .save-button {
-            padding: 10px 20px;
-            background-color: #ffffff;
-            color: #28a745; /* Green color */
-            border: none;
-            border-radius: 3px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-
-        .save-button i {
-            margin-right: 5px;
-        }
-
-        .save-button:hover {
-            background-color: #f2f2f2; /* Light gray background on hover */
-        }
-
-        .action-select {
-            display: flex;
-            align-items: center;
-        }
-
-        .action-select select {
-            margin-right: 10px;
-        }
-
-        .action-select .save-button {
-            margin-left: 0;
-        }
-
-        .save-button span {
-            display: none;
-        }
-
-        .save-button:hover span {
-            display: inline;
-        }
-    </style>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const saveButtons = document.querySelectorAll('.save-button');
-
-            saveButtons.forEach(button => {
-                button.addEventListener('mouseenter', () => {
-                    button.innerHTML = '<i class="fas fa-check"></i>';
-                });
-
-                button.addEventListener('mouseleave', () => {
-                    button.innerHTML = '<i class="fas fa-check"></i>';
-                });
-            });
-        });
-    </script>
-    <script>
-        function removeJobRow(event) {
-            const row = event.target.closest('tr');
-            row.remove();
-        }
-    </script>
+    <title>My Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles_list.css">
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
 </head>
 <body>
-    <div class="job-list-container">
-        <h1 class="job-list-title">My Dashboard</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Company</th>
-                    <th>Location</th>
-                    <th>Tag</th>
-                    <th>Type</th>
-                    <th>Link</th>
-                    <th>Deadline</th>
-                    <th>Notes</th>
-                    <th>Action</th>
-                    <th>Final Outcome</th>
-                    <th>Save</th> <!-- New column for save button -->
-                    <!-- <th>Delete</th> New column for delete button -->
-                </tr>
-            </thead>
-            <tbody>
-                {% for job in user_jobs %}
-                <form method="POST">
-                    <tr>
-                        <td>{{ job[2] }}</td>
-                        <td>{{ job[3] }}</td>
-                        <td>{{ job[4] }}</td>
-                        <td>{{ job[5] }}</td>
-                        <td>{{ job[6] }}</td>
-                        <td><a class="job-list-link" href="{{ job[7] }}" target="_blank" rel="noopener noreferrer">View</a></td>
-                        <td>
-                            <input type="date" name="deadline" value="{{ job[8] }}" required>
-                        </td>
-                        <td><input type="text" name="notes" value="{{ job[9] }}" placeholder="Add your notes here"></td>
-                        <td>
-                            <input type="hidden" name="job_id" value="{{ job[0] }}">
-                            <select name="action">
-                                <option value="None" {% if job[11] == 'None' %}selected{% endif %}>None</option>
-                                <option value="Applied" {% if job[11] == 'Applied' %}selected{% endif %}>Applied</option>
-                                <option value="Pending" {% if job[11] == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="Interview" {% if job[11] == 'Interview' %}selected{% endif %}>Interview</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="hidden" name="job_id" value="{{ job[0] }}">
-                            <select name="final_outcome">
-                                <option value="None" {% if job[10] == 'None' %}selected{% endif %}>None</option>
-                                <option value="Offer" {% if job[10] == 'Offer' %}selected{% endif %}>Offer</option>
-                                <option value="Rejected" {% if job[10] == 'Rejected' %}selected{% endif %}>Rejected</option>
-                                <option value="In Progress" {% if job[10] == 'In Progress' %}selected{% endif %}>In Progress</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="save-button" type="submit">Save</button>
-                        </td> <!-- New column for save button -->
-                        <!-- <td>
-                            <button class="remove-job-button" onclick="removeJobRow(event)">
-                                <i class="fas fa-trash"></i>
-                                <span>Delete</span>
-                            </button>
-                        </td> -->
-                    </tr>
-                </form>
-                {% endfor %}
-            </tbody>
-        </table>
-        <br>
-        <a href="{{ url_for('job_list') }}">Back to Main Page</a>
+    <div class="container"></div>
+        <div class="fixed-header">
+            <div class="page_name">
+                My Dashboard
+            </div>
+            <div class="dropdown">
+                <button class="dropbtn"> Hello, {{ current_user.username }} <i class="fas fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('survey') }}" target="_blank">Take the Survey</a>
+                    <a href="{{ url_for('job_list') }}">Opportunity Hub</a>
+                    <a href="{{ url_for('mentor') }}">Mentor Matching</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+        <main>
+            <main style="margin-top: 60px;"> <!-- Adjust the margin-top value as needed -->
+            <section class="job-list-container">
+                <table class="job-list">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Link</th>
+                            <th>Deadline</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+                            <th>Final Outcome</th>
+                            <th>Save</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in user_jobs %}
+                        <form method="POST">
+                            <tr>
+                                <td>{{ job[2] }}</td>
+                                <td>{{ job[3] }}</td>
+                                <td><a class="job-link" href="{{ job[7] }}" target="_blank" rel="noopener noreferrer">View</a></td>
+                                <td>
+                                    <input type="date" name="deadline" value="{{ job[8] }}" required>
+                                </td>
+                                <td><textarea name="notes" placeholder="Add your notes here">{{ job[9] }}</textarea></td>
+                                <td>
+                                    <input type="hidden" name="job_id" value="{{ job[0] }}">
+                                    <select name="action">
+                                        <option value="None" {% if job[11] == 'None' %}selected{% endif %}>None</option>
+                                        <option value="Applied" {% if job[11] == 'Applied' %}selected{% endif %}>Applied</option>
+                                        <option value="Pending" {% if job[11] == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Interview" {% if job[11] == 'Interview' %}selected{% endif %}>Interview</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="job_id" value="{{ job[0] }}">
+                                    <select name="final_outcome">
+                                        <option value="None" {% if job[10] == 'None' %}selected{% endif %}>None</option>
+                                        <option value="Offer" {% if job[10] == 'Offer' %}selected{% endif %}>Offer</option>
+                                        <option value="Rejected" {% if job[10] == 'Rejected' %}selected{% endif %}>Rejected</option>
+                                        <option value="In Progress" {% if job[10] == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="save-button" type="submit">Save</button>
+                                </td>
+                            </tr>
+                        </form>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
     </div>
 </body>
 </html>

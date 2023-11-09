@@ -1,9 +1,15 @@
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from flask import Flask, render_template, request, redirect, url_for, session, make_response
+from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
+from flask_mail import Mail, Message
 import csv
 import sqlite3
 import secrets
 import os
+import json
+from datetime import datetime, timedelta
+import numpy as np
+import pandas as pd
+import email_m
 
 # Generate a secure secret key
 secret_key = secrets.token_hex(16)
@@ -15,6 +21,38 @@ app.secret_key = secret_key
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'clmtcampus@gmail.com'
+app.config['MAIL_PASSWORD'] = "aavn zfin nqxh wlvy"
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True  # True if Port = 465
+mail = Mail(app)
+
+
+# Sample data (you can load this data from a file or a database)
+buckets_data = {
+    "Bucket #1": [
+        "Climate Finance", "Policy Analysis", "Social Impact", "Justice", "Youth Development", "Climate Policy Analysis",
+        "Advocacy", "Youth", "Communication", "Digital Marketing", "International Trade", "Investment",
+        "Economic Development", "Public Policy & Value Chain Development", "International Sustainable Development",
+        "Macroeconomics"
+    ],
+    "Bucket #2": [
+        "Strategy", "Management", "Policy", "Entrepreneurship", "Sustainable Strategy", "Corporate Strategy",
+        "ESG and Corporate Sustainability", "Climate Finance", "General Sustainability", "Social Entrepreneurship",
+        "Climate Leadership", "Social Entrepreneurship"
+    ],
+    "Bucket #3": ["Climate Resilience", "Risk Management", "Resilience", "Adaptation", "Coastal Management"],
+    "Bucket #4": ["Climate Psychology", "Climate Behavioral Science"],
+    "Bucket #5": ["Strategy", "Management", "Chemistry", "Environmental Science", "Sustainable Fashion", "Sustainable Tourism", "Transportation"],
+    "Bucket #6": ["Energy", "Energy Policy", "Energy Finance", "Renewable Energy", "Climate and Energy"],
+    "Bucket #7": ["Waste Management", "Circular Economy", "Biodiversity", "Ecological Conservation"],
+    "Bucket #8": ["Education", "Green Jobs", "Teaching"],
+    "Bucket #9": ["Consumer Goods", "Supply Chain Analysis"]
+}
 
 # User class
 class User(UserMixin):
@@ -65,6 +103,72 @@ def initialize_database():
 # Initialize the database
 initialize_database()
 
+
+# Create a mentors table in the SQLite database
+def create_mentors_table():
+    conn = sqlite3.connect('user_database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS mentors (
+            mentor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            mentor_name TEXT,
+            mentor_linkedin TEXT,
+            mentor_email TEXT,
+            organization TEXT,
+            position TEXT,
+            pathway TEXT,
+            tags TEXT,
+            availability INTEGER,
+            last_assigned TEXT,
+            days_since_last_assigned INTEGER,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# Initialize the mentors table
+create_mentors_table()
+
+@app.route('/populate_mentors', methods=['GET'])
+def populate_mentors():
+    # Read mentor data from the CSV file and insert it into the mentors table
+    conn = sqlite3.connect('user_database.db')
+    cursor = conn.cursor()
+
+    with open('mentor.csv', 'r') as csvfile:
+        csv_reader = csv.DictReader(csvfile)
+        for row in csv_reader:
+            mentor_name = row['Name']
+            mentor_linkedin = row['Linkedin account']
+            mentor_email = row['Email address']
+            organization = row['Organization']
+            position = row['Position']
+            pathway = row['Pathway']
+            tags = row['Tags']
+            availability = int(row['Availability'])
+            last_assigned = row['LastAssigned']
+            days_since_last_assigned = int(row['DaysSinceLastAssigned'])
+
+            # Insert the mentor data into the mentors table
+            cursor.execute('''
+                INSERT INTO mentors (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned))
+
+    conn.commit()
+    conn.close()
+
+    return 'Mentors populated successfully'
+
+# Call the function to populate mentors from the CSV file
+populate_mentors()
+
+
+
 @login_manager.user_loader
 def load_user(user_id):
     # Connect to the SQLite database
@@ -82,10 +186,26 @@ def load_user(user_id):
         user_id, username = result
         return User(user_id, username)
 
+@app.route('/home')
+def home():
+    if current_user.is_authenticated:
+        return render_template('home.html')
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/mentor')
+def mentor():
+    buckets = buckets_data.keys()
+    tags = buckets_data  # Define 'tags' as a dictionary
+    if current_user.is_authenticated:
+        return render_template('mentor.html', buckets=buckets, tags=tags)
+    else:
+        return redirect(url_for('login'))
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('job_list'))
+        return redirect(url_for('home'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -106,7 +226,7 @@ def login():
             user_id, username, _ = result
             user = User(user_id, username)
             login_user(user)
-            return redirect(url_for('job_list'))
+            return redirect(url_for('home'))
         else:
             return 'Invalid username or password. Please try again.'
 
@@ -143,7 +263,7 @@ def register():
 
     return render_template('register.html')
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('login'))
@@ -152,7 +272,7 @@ def logout():
 @login_required
 def job_list():
     if request.method == 'POST':
-        # Retrieve the form data
+        # Retrieve the job details from the form
         title = request.form['title']
         company = request.form['company']
         location = request.form['location']
@@ -194,7 +314,15 @@ def job_list():
         for row in csv_reader:
             job_listings.append(row)
 
-    return render_template('job_list.html', job_listings=job_listings)
+    # # Convert job listings to JSON format
+    # job_listings_json = json.dumps(job_listings)
+
+    return render_template('main_page.html', job_listings=job_listings)
+
+@app.route('/survey')
+@login_required
+def survey():
+    return render_template('survey.html')
 
 
 @app.route('/my_job_list', methods=['GET', 'POST'])
@@ -248,8 +376,57 @@ def my_job_list():
 
     return render_template('my_job_list.html', user_jobs=user_jobs)
 
+@app.route('/process_data', methods=['POST'])
+def process_data():
+    # Get the selected buckets and tags from the form
+    bucket1 = request.form.get('bucket1')
+    tag1 = request.form.getlist('tag1')  # Use getlist to get multiple selected tags
+    bucket2 = request.form.get('bucket2')
+    tag2 = request.form.getlist('tag2')
 
+    bucket_choice = [bucket1, bucket2]
+    tag_choice= tag1 + tag2
+    print(bucket_choice)
+    print(tag_choice)
+    mentordf = pd.read_csv("mentor.csv")
+    #if last assigned was over a month ago, change Availability back
+    mentordf['Availability'] = np.where(mentordf['DaysSinceLastAssigned'] > 30, 1, 0)
+    #subset df based on availability
+    availablementors = mentordf[mentordf['Availability'] == 1]
+    # choose mentors that match buckets and tags
+    availablementors['Pathway'] = availablementors['Pathway'].str.split(', ')
+    availablementors['Tags'] = availablementors['Tags'].str.split(', ')
+    # count number of matches
+    availablementors['MatchCount_bucket'] = availablementors['Pathway'].apply(lambda x: sum(bucket.lower().replace("#", '') in x for bucket in bucket_choice))
+    availablementors['MatchCount_tags'] = availablementors['Tags'].apply(lambda x: sum(tag.lower() in x for tag in tag_choice))
+    availablementors["TotalMatches"]= availablementors['MatchCount_bucket'] + availablementors['MatchCount_tags']
 
+    #Find the mentors with the highest number of matches -- bucket
+    max_match_count = availablementors['TotalMatches'].max()
+    mentors_with_highest_matches = availablementors[availablementors['TotalMatches'] == max_match_count]
+    result = list(mentors_with_highest_matches[['Name','Position','Organization']].values.tolist()[0])
+
+    return jsonify(result=result)
+
+@app.route("/send_email", methods=['POST'])
+def send_email():
+    if request.method == 'POST':
+        data = request.get_json()
+        recipient_email = data.get('user_email')
+        full_name = data.get('full_name')
+        linkedin_profile = data.get('linkedin_profile')
+        short_bio = data.get('short_bio')
+        print(recipient_email)
+
+        msg = Message('Introduction Request', sender='clmtcampus@gmail.com', recipients=[recipient_email])
+        msg.body = f"Hello {full_name},\n\nYou have received an introduction request from {linkedin_profile}.\n\nShort Bio: {short_bio}"
+
+        try:
+            mail.send(msg)
+            return "Your introduction request email has been sent!"
+        except Exception as e:
+            return f"An error occurred: {str(e)}"
+    return "Invalid request method"
 
 # @app.route('/update_job', methods=['POST'])
 # @login_required
