@@ -26,7 +26,7 @@ login_manager.init_app(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'clmtcampus@gmail.com'
-app.config['MAIL_PASSWORD'] = "aavn zfin nqxh wlvy"
+app.config['MAIL_PASSWORD'] = ""
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True  # True if Port = 465
 mail = Mail(app)
