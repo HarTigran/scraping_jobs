@@ -160,3 +160,38 @@ main {
 .job-list input[type="date"] {
     width: 80%; /* Adjusted width to fit within the cell */
 }
+
+
+.mentor-list-container {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.mentor-list {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #E2E2E2; /* Subtle border */
+    border-radius: 5px;
+}
+
+.mentor-list th {
+    background-color: #BADA55; /* Professional blue header for table */
+    color: #fff;
+    font-weight: bold;
+    padding: 15px 10px;
+    text-align: left;
+}
+
+.mentor-list th, .job-list td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+.mentor-list th, .mentor-list td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #E2E2E2;
+}
+
+.mentor-list tr:nth-child(even) {
+    background-color: #F7F7F7;
+}

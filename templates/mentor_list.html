@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Mentors</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles_list.css">
+    <link rel="icon" type="image/png" href="/static/CLMT.png">
+</head>
+
+<body>
+    {% if is_admin %}
+        <div class="container">
+            <div class="fixed-header">
+                <div class="page_name">
+                    Mentors
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn"> Hello, {{ current_user.username }} <i class="fas fa-caret-down"></i></button>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('home') }}">Home</a>
+                        <a href="{{ url_for('survey') }}" target="_blank">Take the Survey</a>
+                        <a href="{{ url_for('job_list') }}">Opportunity Hub</a>
+                        <a href="{{ url_for('mentor') }}">Mentor Matching</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </div>
+            <main>
+                <main style="margin-top: 60px;"> <!-- Adjust the margin-top value as needed -->
+                    <section class="mentor-list-container">
+                        <table class="mentor-list">
+                            <thead>
+                                <tr>
+                                    <!-- <th>Mentor ID</th>
+                                    <th>User ID</th> -->
+                                    <th>Mentor Name</th>
+                                    <th>Mentor LinkedIn</th>
+                                    <th>Mentor Email</th>
+                                    <th>Organization</th>
+                                    <th>Position</th>
+                                    <th>Pathway</th>
+                                    <th>Tags</th>
+                                    <th>Matched</th>
+                                    <th>Last Assigned</th>
+                                    <th>Days Since Last Assigned</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for mentor in mentor_data %}
+                                <tr>
+                                    <!-- <td>{{ mentor['mentor_id'] }}</td>
+                                    <td>{{ mentor['user_id'] }}</td> -->
+                                    <td>{{ mentor['mentor_name'] }}</td>
+                                    <td>
+                                        {% if mentor['mentor_linkedin'] %}
+                                            <a class="mentor-link" href="{{ mentor['mentor_linkedin'] }}" target="_blank" rel="noopener noreferrer">View</a>
+                                        {% else %}
+                                            No LinkedIn Profile
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ mentor['mentor_email'] }}</td>
+                                    <td>{{ mentor['organization'] }}</td>
+                                    <td>{{ mentor['position'] }}</td>
+                                    <td>{{ mentor['pathway'] }}</td>
+                                    <td>{{ mentor['tags'] }}</td>
+                                    <td>{{ mentor['count'] }}</td>
+                                    <td>{{ mentor['last_assigned'] }}</td>
+                                    <td>{{ mentor['days_since_last_assigned'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </section>
+                </main>
+            </main>
+        </div>
+    {% else %}
+        <!-- Content for non-admin users (if any) -->
+        <p>This content is only available to administrators.</p>
+    {% endif %}
+</body>
+
+</html>

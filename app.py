@@ -109,6 +109,14 @@ def create_mentors_table():
     conn = sqlite3.connect('user_database.db')
     cursor = conn.cursor()
 
+    # Check if the "mentors" table exists
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='mentors';")
+    table_exists = cursor.fetchone()
+
+    # # If the "mentors" table exists, drop it
+    # if table_exists:
+    #     cursor.execute("DROP TABLE mentors;")
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS mentors (
             mentor_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -123,6 +131,7 @@ def create_mentors_table():
             availability INTEGER,
             last_assigned TEXT,
             days_since_last_assigned INTEGER,
+            count INTEGER DEFAULT 0,
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     ''')
@@ -153,11 +162,17 @@ def populate_mentors():
             last_assigned = row['LastAssigned']
             days_since_last_assigned = int(row['DaysSinceLastAssigned'])
 
-            # Insert the mentor data into the mentors table
-            cursor.execute('''
-                INSERT INTO mentors (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned))
+            # Check if the mentor with the same email already exists
+            cursor.execute("SELECT mentor_id FROM mentors WHERE mentor_email = ?", (mentor_email,))
+            existing_mentor = cursor.fetchone()
+
+            if not existing_mentor:
+
+                # Insert the mentor data into the mentors table
+                cursor.execute('''
+                    INSERT INTO mentors (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (mentor_name, mentor_linkedin, mentor_email, organization, position, pathway, tags, availability, last_assigned, days_since_last_assigned))
 
     conn.commit()
     conn.close()
@@ -166,8 +181,6 @@ def populate_mentors():
 
 # Call the function to populate mentors from the CSV file
 populate_mentors()
-
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -199,6 +212,29 @@ def mentor():
     tags = buckets_data  # Define 'tags' as a dictionary
     if current_user.is_authenticated:
         return render_template('mentor.html', buckets=buckets, tags=tags)
+    else:
+        return redirect(url_for('login'))
+    
+@app.route('/mentor-list')
+def mentor_list():
+    if current_user.is_authenticated and current_user.username == 'admin':
+        # Connect to the SQLite database
+        conn = sqlite3.connect('user_database.db')
+
+        # Create a cursor object to execute SQL queries
+        cursor = conn.cursor()
+
+        # Execute a query to select all data from the "mentors" table
+        cursor.execute("SELECT * FROM mentors")
+
+        # Fetch all rows as a list of dictionaries
+        columns = [column[0] for column in cursor.description]
+        mentor_data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+        # Close the database connection
+        conn.close()
+
+        return render_template('mentor_list.html', is_admin=True, mentor_data=mentor_data)
     else:
         return redirect(url_for('login'))
 
@@ -386,40 +422,82 @@ def process_data():
 
     bucket_choice = [bucket1, bucket2]
     tag_choice= tag1 + tag2
-    print(bucket_choice)
-    print(tag_choice)
-    mentordf = pd.read_csv("mentor.csv")
+    # Connect to the SQLite database
+    conn = sqlite3.connect("user_database.db")
+
+    # Specify the SQL query to retrieve data from the "mentors" table
+    sql_query = "SELECT * FROM mentors"
+
+    # Use pandas to read data from the database into a DataFrame
+    mentordf = pd.read_sql_query(sql_query, conn)
+
+    # Close the database connection
+    conn.close()
+    
+    # mentordf = pd.read_csv("mentor.csv")
+    # Convert 'last_assigned' column to datetime if it's not already
+    mentordf['last_assigned'] = pd.to_datetime(mentordf['last_assigned'], errors='coerce')
+    today = datetime.today()
+    # Check if there are any NaT (Not a Timestamp) values after conversion
+    if mentordf['last_assigned'].isna().any():
+        # Handle missing or invalid datetime values as needed
+        # For example, you can drop rows with missing values
+        mentordf = mentordf.dropna(subset=['last_assigned'])
+
+    # Calculate the difference in days between today and last_assigned
+    timespent = today - mentordf['last_assigned']
+    mentordf['days_since_last_assigned'] = timespent.dt.days
     #if last assigned was over a month ago, change Availability back
-    mentordf['Availability'] = np.where(mentordf['DaysSinceLastAssigned'] > 30, 1, 0)
+    mentordf['availability'] = np.where(mentordf['days_since_last_assigned'] > 30, 1, 0)
     #subset df based on availability
-    availablementors = mentordf[mentordf['Availability'] == 1]
+    availablementors = mentordf[(mentordf['availability'] == 1) & (mentordf['count'] < 4) ]
     # choose mentors that match buckets and tags
-    availablementors['Pathway'] = availablementors['Pathway'].str.split(', ')
-    availablementors['Tags'] = availablementors['Tags'].str.split(', ')
+    availablementors['pathway'] = availablementors['pathway'].str.split(', ')
+    availablementors['tags'] = availablementors['tags'].str.split(', ')
     # count number of matches
-    availablementors['MatchCount_bucket'] = availablementors['Pathway'].apply(lambda x: sum(bucket.lower().replace("#", '') in x for bucket in bucket_choice))
-    availablementors['MatchCount_tags'] = availablementors['Tags'].apply(lambda x: sum(tag.lower() in x for tag in tag_choice))
+    availablementors['MatchCount_bucket'] = availablementors['pathway'].apply(lambda x: sum(bucket.lower().replace("#", '') in x for bucket in bucket_choice))
+    availablementors['MatchCount_tags'] = availablementors['tags'].apply(lambda x: sum(tag.lower() in x for tag in tag_choice))
     availablementors["TotalMatches"]= availablementors['MatchCount_bucket'] + availablementors['MatchCount_tags']
 
     #Find the mentors with the highest number of matches -- bucket
     max_match_count = availablementors['TotalMatches'].max()
     mentors_with_highest_matches = availablementors[availablementors['TotalMatches'] == max_match_count]
-    result = list(mentors_with_highest_matches[['Name','Position','Organization']].values.tolist()[0])
+
+    result = list(mentors_with_highest_matches[['mentor_name','position','organization','mentor_email']].values.tolist()[0])
+    session['mentor_email'] = result[3]
 
     return jsonify(result=result)
 
 @app.route("/send_email", methods=['POST'])
 def send_email():
+    today_date = datetime.today().date()
     if request.method == 'POST':
         data = request.get_json()
         recipient_email = data.get('user_email')
         full_name = data.get('full_name')
         linkedin_profile = data.get('linkedin_profile')
         short_bio = data.get('short_bio')
-        print(recipient_email)
+        mentor_email = session.get('mentor_email', 'No email found in session')
 
         msg = Message('Introduction Request', sender='clmtcampus@gmail.com', recipients=[recipient_email])
         msg.body = f"Hello {full_name},\n\nYou have received an introduction request from {linkedin_profile}.\n\nShort Bio: {short_bio}"
+
+        # Connect to the SQLite database
+        conn = sqlite3.connect('user_database.db')
+        cursor = conn.cursor()
+
+        # Update the "coun" column by adding 1 and "last_assigned" column with the current date
+        cursor.execute('''
+            UPDATE mentors
+            SET count = count + 1, last_assigned = ?
+            WHERE mentor_email = ?
+        ''', (today_date.strftime("%m/%d/%Y"), mentor_email))
+
+        # Commit the changes
+        conn.commit()
+
+        # Close the connection
+        conn.close()
 
         try:
             mail.send(msg)
