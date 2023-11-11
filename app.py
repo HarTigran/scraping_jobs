@@ -26,7 +26,7 @@ login_manager.init_app(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'clmtcampus@gmail.com'
-app.config['MAIL_PASSWORD'] = ""
+app.config['MAIL_PASSWORD'] = "tira frva sdjv xzsi"
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True  # True if Port = 465
 mail = Mail(app)
@@ -450,7 +450,7 @@ def process_data():
     #if last assigned was over a month ago, change Availability back
     mentordf['availability'] = np.where(mentordf['days_since_last_assigned'] > 30, 1, 0)
     #subset df based on availability
-    availablementors = mentordf[(mentordf['availability'] == 1) & (mentordf['count'] < 4) ]
+    availablementors = mentordf[(mentordf['availability'] == 1) | (mentordf['count'] < 3) ]
     # choose mentors that match buckets and tags
     availablementors['pathway'] = availablementors['pathway'].str.split(', ')
     availablementors['tags'] = availablementors['tags'].str.split(', ')
@@ -479,7 +479,7 @@ def send_email():
         short_bio = data.get('short_bio')
         mentor_email = session.get('mentor_email', 'No email found in session')
 
-        msg = Message('Introduction Request', sender='clmtcampus@gmail.com', recipients=[recipient_email])
+        msg = Message('Introduction Request', sender='clmtcampus@gmail.com', recipients=[recipient_email,mentor_email])
         msg.body = f"Hello {full_name},\n\nYou have received an introduction request from {linkedin_profile}.\n\nShort Bio: {short_bio}"
 
         # Connect to the SQLite database

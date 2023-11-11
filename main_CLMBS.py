@@ -16,7 +16,7 @@ headers = {
 all_job_listings = []
 
 # Define the number of pages to scrape (you can set it to a large number to scrape all pages)
-num_pages_to_scrape = 3
+num_pages_to_scrape = 5
 
 # Loop through the pages and scrape job listings
 for page_num in range(1, num_pages_to_scrape + 1):
@@ -71,25 +71,25 @@ for page_num in range(1, num_pages_to_scrape + 1):
             # Extract the job description and compensation information from the job details page
             job_response = requests.get(link, headers=headers)
             if job_response.status_code == 200:
-                job_soup = BeautifulSoup(job_response.content, 'html.parser')
-                compensation_info = job_soup.find('div', class_='JobListing__DescriptionContainer-sc-15uyy2k-0')
-                compensation_text = compensation_info.get_text() if compensation_info else ''
+                # job_soup = BeautifulSoup(job_response.content, 'html.parser')
+                # compensation_info = job_soup.find('div', class_='JobListing__DescriptionContainer-sc-15uyy2k-0')
+                # compensation_text = compensation_info.get_text() if compensation_info else ''
                 
-                pattern = r'(Base Pay:|Pay Range:|salary range for this position is)\s*(\$?[\d,]+(?:\.\d{2})?)\s*(?:-|to)\s*(\$?[\d,]+(?:\.\d{2})?)'
+                # pattern = r'(Base Pay:|Pay Range:|salary range for this position is)\s*(\$?[\d,]+(?:\.\d{2})?)\s*(?:-|to)\s*(\$?[\d,]+(?:\.\d{2})?)'
 
-                # Search for the pay range pattern in the text
-                pay_range_match = re.search(pattern, compensation_text)
+                # # Search for the pay range pattern in the text
+                # pay_range_match = re.search(pattern, compensation_text)
 
-                if pay_range_match:
-                    header = pay_range_match.group(1).strip()
-                    start_range = pay_range_match.group(2).strip()
-                    end_range = pay_range_match.group(3).strip()
-                    pay_range = (header, start_range, end_range)
-                else:
-                    pay_range = ('', '', '')
+                # if pay_range_match:
+                #     header = pay_range_match.group(1).strip()
+                #     start_range = pay_range_match.group(2).strip()
+                #     end_range = pay_range_match.group(3).strip()
+                #     pay_range = (header, start_range, end_range)
+                # else:
+                #     pay_range = ('', '', '')
 
-                # Extract job summary using a more specific pattern
-                job_summary_text = compensation_text
+                # # Extract job summary using a more specific pattern
+                # job_summary_text = compensation_text
 
 
                 all_job_listings.append({
@@ -100,8 +100,8 @@ for page_num in range(1, num_pages_to_scrape + 1):
                     'Type': type,
                     'Link': link,
                     'Posting Date': posting_date_str,
-                    'Job Summary': job_summary_text,
-                    'Compensation': pay_range
+                    # 'Job Summary': job_summary_text,
+                    # 'Compensation': pay_range
                 })
             else:
                 print(f'Failed to retrieve details for job: {title}. Status code:', job_response.status_code)
@@ -114,7 +114,7 @@ csv_file = 'CLMBS_student_listings.csv'
 
 # Write all job listings data to a single CSV file
 with open(csv_file, 'w', newline='', encoding='utf-8') as file:
-    fieldnames = ['Title', 'Company', 'Location', 'Tag', 'Type', 'Link', 'Posting Date', 'Job Summary', 'Compensation']
+    fieldnames = ['Title', 'Company', 'Location', 'Tag', 'Type', 'Link', 'Posting Date']
     writer = csv.DictWriter(file, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(all_job_listings)

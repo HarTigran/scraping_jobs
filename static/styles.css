@@ -389,3 +389,20 @@ select:focus {
 .hidden {
     display: none;
 }
+
+.bucket-details {
+    display: flex;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    width: 70%; /* Set the width to 70% */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+.bucket-details a {
+    margin-right: 5px; /* Adjust as needed to reduce the space between images */
+}
+
+.bucket-details img {
+    max-width: 100%; /* Make images 50% of their original width */
+    height: auto; /* Maintain aspect ratio */
+}
