@@ -463,8 +463,8 @@ def process_data():
     max_match_count = availablementors['TotalMatches'].max()
     mentors_with_highest_matches = availablementors[availablementors['TotalMatches'] == max_match_count]
 
-    result = list(mentors_with_highest_matches[['mentor_name','position','organization','mentor_email']].values.tolist()[0])
-    session['mentor_email'] = result[3]
+    result = list(mentors_with_highest_matches[['mentor_name','position','organization','mentor_email','mentor_linkedin']].values.tolist()[0])
+    session['mentor_data'] = result
 
     return jsonify(result=result)
 
@@ -477,10 +477,57 @@ def send_email():
         full_name = data.get('full_name')
         linkedin_profile = data.get('linkedin_profile')
         short_bio = data.get('short_bio')
-        mentor_email = session.get('mentor_email', 'No email found in session')
+        mentor_data = session.get('mentor_data', [])
+        mentor_email = mentor_data[3] if len(mentor_data) > 1 else 'No data found in session'
+        mentor_name = mentor_data[0] if len(mentor_data) > 1 else 'No data found in session'
+        mentor_lnkdn = mentor_data[4] if len(mentor_data) > 1 else 'No data found in session'
 
         msg = Message('Introduction Request', sender='clmtcampus@gmail.com', recipients=[recipient_email,mentor_email])
-        msg.body = f"Hello {full_name},\n\nYou have received an introduction request from {linkedin_profile}.\n\nShort Bio: {short_bio}"
+        # HTML content with links and formatting
+        html_content = f'''<p>Dear {mentor_name},</p>
+
+        <p>Thank you again for agreeing to take time out of your busy schedule to speak with the aspiring young climate and sustainability professionals. You were matched for an informational interview with {full_name}, <a href="{linkedin_profile}">LinkedIn profile</a>.</p>
+
+        <p><strong>Here is {full_name}'s short bio:</strong> {short_bio}.</p>
+
+        <p>As a reminder, the informational interviews are scheduled to help the students better understand the climate and sustainability labor market and potential career trajectories.</p>
+
+        <p>Dear {full_name}, please make sure to review {mentor_name}'s <a href="{mentor_lnkdn}">LinkedIn profile</a> and read the informational interview guide below to effectively lead the conversation. Please follow up with your mentor to schedule a 20-30 minute long informational interview.</p>
+
+        <p><strong>Informational Interview Guide</strong></p>
+
+        <p>We have created this guide to help you prepare for your informational interview. Informational interviews are crucial for learning more about the industry, company, or role you're interested in. They provide an opportunity to test your assumptions, gain insights, and find the best-fit roles based on your interests.</p>
+
+                <p><strong>Before the Call:</strong></p>
+        <ul>
+            <li><strong>Define your goals:</strong> Consider what you would like to achieve through this call. Are you seeking industry insights, career advice, or specific information about the person's role?</li>
+            <li><strong>Do your research:</strong> Learn about the person: Find out more about their background, experiences, and current role. This will help you establish a connection and ask relevant questions.</li>
+            <li><strong>Research the organization:</strong> Understand the company's mission, values, products/services, and recent developments. This demonstrates your interest and preparation.</li>
+            <li><strong>Prepare questions:</strong> Having a set of questions ready will provide structure to the conversation and ensure you cover the key areas of interest. It also shows that you've done your homework. Here are some suggestions:</li>
+        </ul>
+
+        <p><strong>During the Call:</strong></p>
+        <ul>
+            <li><strong>Take notes:</strong> Ask the person if it's alright to take notes during the conversation. Jot down major points, advice, and any action items discussed. These notes will serve as a valuable reference later on.</li>
+            <li><strong>Be fully engaged:</strong> Show genuine interest in the person, not only professionally but also as an individual. By understanding their journey and experiences, you'll gain valuable insights and build a connection.</li>
+            <li><strong>Ask about personal traits:</strong> In addition to professional advice, inquire about the personality traits or characteristics that have contributed to their success in the industry. This can provide valuable insights and inspiration.</li>
+            <li><strong>Offer assistance:</strong> If you come across an opportunity to help the person, such as connecting them with someone you know or sharing a relevant resource, offer your assistance. Approach the conversation with an attitude of how you can contribute.</li>
+        </ul>
+
+        <p><strong>After the Call:</strong></p>
+        <ul>
+            <li><strong>Send a thank-you email:</strong> Express your gratitude for the person's time and insights. Be genuine and specific about what you found most valuable in the conversation.</li>
+            <li><strong>Summarize the main points:</strong> Briefly recap the key takeaways from the call and any action items that were agreed upon. This demonstrates your attentiveness and commitment to following up.</li>
+            <li><strong>Maintain future contact:</strong> Let the person know that you will keep them posted about your progress and any relevant updates. This helps to maintain the relationship and opens the door for potential future interactions.</li>
+        </ul>
+
+        <p>Thank you,<br>
+        Lucy<br>
+        CLMT Campus</p>
+        '''
+
+        msg.html = html_content
+
 
         # Connect to the SQLite database
         conn = sqlite3.connect('user_database.db')

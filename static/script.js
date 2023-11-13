@@ -29,7 +29,6 @@ function populateJobCards(jobListings) {
                     <div class="job-card-actions">
                     <a href="${job.Link}" target="_blank">Apply</a>
                     <a href="#" class="save-job-button">Add to My Job List</a> <!-- Add the "Save" button -->
-                    <a href="#">Share</a>
                 </div>
             </div>
         </div>

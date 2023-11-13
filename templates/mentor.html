@@ -28,7 +28,15 @@
             <!-- Updated Logo (smaller) -->
             <img id="logo" src="/static/CLMT.png" alt="Your Logo">
             <!-- Updated Slogan (positioned below the logo) -->
-            <h2 class="slogan">Transform your passion for sustainability into purpose</h2>
+            <h2 class="text_title">Informational Interviews</h2>
+            <h2 class="text_body">To be matched to a climate and sustainability professional for informational interviews:</h2>
+            <ol class="text_body">
+                <li>Select the 2 buckets you consider relevant for you</li>
+                <li>Under each bucket, select corresponding tags</li>
+            </ol>
+
+            <p class="text_body">*For the purposes of this pilot, you can only get matched 3 times.</p>
+            <p class="text_body">**To establish a longer mentor-mentee relationship, please email Lucy at lucy@theclmtcampus.com</p>
         </div>
         <form method="POST" action="/process_data" id="data-form">
             <div class="dropdown-container">
@@ -93,7 +101,52 @@
                 </form>
             </div>
             <div class="bucket-details">
-                <a href="https://www.theclmtcampus.com/bucket-1" target="_blank"><img src="/static/buckets/b_1.png" alt="Image 1"></a>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-1" target="_blank">
+                        <img src="/static/buckets/b_1.png" alt="Image 1">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-2" target="_blank">
+                        <img src="/static/buckets/b_2.png" alt="Image 2">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-3" target="_blank">
+                        <img src="/static/buckets/b_3.png" alt="Image 3">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-4" target="_blank">
+                        <img src="/static/buckets/b_4.png" alt="Image 4">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-5" target="_blank">
+                        <img src="/static/buckets/b_5.png" alt="Image 5">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-6" target="_blank">
+                        <img src="/static/buckets/b_6.png" alt="Image 6">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-7" target="_blank">
+                        <img src="/static/buckets/b_7.png" alt="Image 7">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-8" target="_blank">
+                        <img src="/static/buckets/b_8.png" alt="Image 8">
+                    </a>
+                </div>
+                <div class="card">
+                    <a href="https://www.theclmtcampus.com/bucket-9" target="_blank">
+                        <img src="/static/buckets/b_9.png" alt="Image 9">
+                    </a>
+                </div>
+                <!-- <a href="https://www.theclmtcampus.com/bucket-1" target="_blank"><img src="/static/buckets/b_1.png" alt="Image 1"></a>
                 <a href="https://www.theclmtcampus.com/bucket-2" target="_blank"><img src="/static/buckets/b_2.png" alt="Image 2"></a>
                 <a href="https://www.theclmtcampus.com/bucket-3" target="_blank"><img src="/static/buckets/b_3.png" alt="Image 3"></a>
                 <a href="https://www.theclmtcampus.com/bucket-4" target="_blank"><img src="/static/buckets/b_4.png" alt="Image 4"></a>
@@ -101,7 +154,7 @@
                 <a href="https://www.theclmtcampus.com/bucket-6" target="_blank"><img src="/static/buckets/b_6.png" alt="Image 6"></a>
                 <a href="https://www.theclmtcampus.com/bucket-7" target="_blank"><img src="/static/buckets/b_7.png" alt="Image 7"></a>
                 <a href="https://www.theclmtcampus.com/bucket-8" target="_blank"><img src="/static/buckets/b_8.png" alt="Image 8"></a>
-                <a href="https://www.theclmtcampus.com/bucket-9" target="_blank"><img src="/static/buckets/b_9.png" alt="Image 9"></a>
+                <a href="https://www.theclmtcampus.com/bucket-9" target="_blank"><img src="/static/buckets/b_9.png" alt="Image 9"></a> -->
             </div>
         </div>
     </div>
@@ -157,7 +210,7 @@
             .then(data => {
                 // Handle the data and update the page content
                 const resultContainer = document.getElementById('result-container');
-                resultContainer.innerHTML = `Congratulations! You were matched with: ${data.result[0]}, ${data.result[1]} at ${data.result[2]}`;
+                resultContainer.innerHTML = `Congratulations! You were matched with: ${data.result[0]}, ${data.result[1]} at ${data.result[2]}. Now, fill out the form below that will generate an intro letter with ${data.result[0]}.`;
                 // Show the form container
                 
                 const formContainer = document.getElementById('form-container');

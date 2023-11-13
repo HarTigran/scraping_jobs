@@ -1,8 +1,8 @@
 beautifulsoup4
 requests
-selenium
 pandas
 flask
 datetime
 # pysqlite3
 flask_login
+flask-mail

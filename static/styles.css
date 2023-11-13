@@ -235,6 +235,37 @@
     margin-top: 200px;
 }
 
+.text_title {
+    color: #333;
+    font-size: 36px;
+    font-family: 'Syne', sans-serif;
+    max-width: 750px;
+    text-align: center;
+    margin: 0 auto;
+    position: relative; /* Make the slogan a positioning context */
+    margin-top: 200px;
+}
+
+.text_body {
+    color: #777;
+    font-size: 18px;
+    /* font-family: 'Syne', sans-serif; */
+    font-weight: normal;
+    max-width: 750px;
+    text-align: left;
+    margin: 0 auto;
+    position: relative; /* Make the slogan a positioning context */
+    margin-top: 20px;
+}
+ol.text_body {
+    list-style-type: decimal; /* Set bullet point style */
+    margin-bottom: 10px; /* Adjust margin-bottom as needed */
+}
+
+.text_body li {
+    margin-bottom: 5px; /* Adjust margin-bottom for space between list items */
+}
+
 #logo {
     width: 330px;
     position: absolute;
@@ -256,6 +287,11 @@
     text-align: center;
     text-decoration: none;
     cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.button:hover {
+    transform: scale(1.1);
 }
 
 .button img {
@@ -392,9 +428,10 @@ select:focus {
 
 .bucket-details {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center; /* Center items horizontally */
     align-items: center; /* Center items vertically */
-    width: 70%; /* Set the width to 70% */
+    width: 60%; /* Set the width to 70% */
     margin: 0 auto; /* Center the container horizontally */
 }
 
@@ -405,4 +442,16 @@ select:focus {
 .bucket-details img {
     max-width: 100%; /* Make images 50% of their original width */
     height: auto; /* Maintain aspect ratio */
+}
+
+.card {
+    width: 150px; /* Adjust the width of your card as needed */
+    margin: 10px;
+    border: 1px solid #ddd; /* Add a border for a card-like appearance */
+    overflow: hidden; /* Ensure content does not overflow */
+    transition: transform 0.3s ease; /* Add a smooth transition effect */
+}
+
+.card:hover {
+    transform: scale(1.1); /* Add a scaling effect on hover */
 }

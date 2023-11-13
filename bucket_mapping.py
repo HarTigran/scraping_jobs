@@ -39,7 +39,6 @@ international_cooperation_sustainable_dev_keywords = [
     "Climate Science & Research",
     "Sustainable Development Officer",
     "Environmental Consultant",
-    "Climate Scientist"
 ]
 
 # Combine all keywords into a single list
@@ -50,16 +49,6 @@ bucket_1_keywords = (
     international_cooperation_sustainable_dev_keywords
 )
 
-# Climate Data Analysis Pathway (2a)
-climate_data_analysis_keywords = [
-    "Climate Data Analysis & Modeling",
-    "Environmental Data Science",
-    "Climate Data Governance & Ethics",
-    "Environmental Impact Assessment",
-    "Climate/Environmental Data Analyst",
-    "Data Governance Specialist",
-    "Environmental Compliance Specialist"
-]
 
 # Corporate Sustainability, Green Business, & Supply Chain Management Pathway (2b)
 corporate_sustainability_keywords = [
@@ -75,6 +64,7 @@ corporate_sustainability_keywords = [
 # Climate Entrepreneurship Pathway (2c)
 climate_entrepreneurship_keywords = [
     "Green Technology & Innovation",
+    "Software",
     "Climate Entrepreneurship & Investing",
     "Green Entrepreneur",
     "Impact Investor"
@@ -82,11 +72,10 @@ climate_entrepreneurship_keywords = [
 
 # Combine all keywords into a single list
 bucket_2_keywords = (
-    climate_data_analysis_keywords +
     corporate_sustainability_keywords +
     climate_entrepreneurship_keywords
 )
-
+# Pathway (3)
 climate_risk_adaptation_keywords = [
     "Climate Change Adaptation Planning",
     "Environmental Finance & Risk Management",
@@ -96,14 +85,26 @@ climate_risk_adaptation_keywords = [
     "Climate Policy Advisor"
 ]
 
+# Climate Data Analysis Pathway (3)
+climate_data_analysis_keywords = [
+    "Climate Data Analysis & Modeling",
+    "Environmental Data Science",
+    "Climate Data Governance & Ethics",
+    "Environmental Impact Assessment",
+    "Climate/Environmental Data Analyst",
+    "Data Governance Specialist",
+    "Environmental Compliance Specialist"
+]
+
 # Combine all keywords into a single list
-bucket_3_keywords = climate_risk_adaptation_keywords
+bucket_3_keywords = (climate_risk_adaptation_keywords +  climate_data_analysis_keywords)
 
 # Climate Psychology & Behavioral Change Pathway (4a)
 climate_psychology_keywords = [
     "Climate Psychology & Behavioral Change",
     "Climate Psychologist",
-    "Climate-Aware Therapist"
+    "Climate-Aware Therapist",
+    "Climate Anxiety"
 ]
 
 # Environmental Health & Safety Pathway (4b)
@@ -133,19 +134,13 @@ green_infrastructure_keywords = [
 
 # Sustainable Tourism Pathway (5b)
 sustainable_tourism_keywords = [
-    "Sustainable Tourism Development & Management",
-    "Sustainable Tourism Developer",
-    "Sustainable Tourism Consultant",
-    "Sustainable Tourism Manager"
+    "Sustainable Tourism",
 ]
 
 # Green Chemistry & Sustainable Materials Pathway (5c)
 green_chemistry_keywords = [
     "Sustainable Materials Science",
     "Sustainable Fashion & Textiles",
-    "Sustainable Materials Researcher",
-    "Carbon Capture and Sequestration Engineer",
-    "Life Cycle Analyst/Manager",
     "Textile Recycler"
 ]
 
@@ -160,24 +155,19 @@ bucket_5_keywords = (
 energy_pathway_keywords = [
     "Renewable Energy",
     "Energy Efficiency",
-    "Sustainable Waste-to-Energy Solutions",
     "Renewable Energy Engineer",
     "Renewable Energy Technician",
     "Energy Efficiency Specialist",
-    "Sustainable Energy Project Manager",
-    "Renewable Energy Analyst",
-    "Waste-to-Energy Engineer",
-    "Sustainable Energy Policy Analyst",
-    "Renewable Energy Consultant"
+    "Sustainable Energy Policy",
+
 ]
 
 # Carbon Markets; Carbon Footprint Analysis Pathway (6b)
 carbon_markets_keywords = [
     "Carbon Markets & Finance",
-    "Carbon Markets & Voluntary Offset Programs",
-    "Carbon Footprint Analysis & Management",
-    "Carbon Market Analyst",
-    "Sustainability Consultant"
+    "Carbon Markets & Offset Programs",
+    "Carbon Footprint Analysis",
+    "Carbon Market Analyst"
 ]
 
 # Combine all keywords into a single list
@@ -226,11 +216,11 @@ buckets = {
     "Bucket #6": bucket_6_keywords,
     "Bucket #7": bucket_7_keywords,
     "Bucket #8": bucket_8_keywords,
-    "Bucket #9": ["Sustainable Consumer Goods","Consumer Goods","Product Developer","Sustainability Manager","Environmental Compliance Officer", "Recycled Materials","Energy-Efficient"]
+    "Bucket #9": ["Sustainable Consumer Goods","Environmental Compliance Officer", "Recycled Materials", "Sustainable supply chains"]
 }
 
 # Read CSV file into a pandas DataFrame
-df = pd.read_csv("CLMBS_student_listings.csv")
+df = pd.read_csv("Job Listings.csv", encoding='latin-1')
 
 def match_title_to_bucket(title, buckets):
     choices = [keyword for keywords in buckets.values() for keyword in keywords]
@@ -243,6 +233,6 @@ def match_title_to_bucket(title, buckets):
 df[['Best Matched Bucket', 'Matching Result', 'Matching Score']] = df['Title'].apply(lambda x: pd.Series(match_title_to_bucket(x, buckets)))
 
 # Save the DataFrame to a new CSV file
-df.to_csv("CLMBS_student_listings_with_buckets.csv", index=False)
+df.to_csv("Job listings_with_buckets.csv", index=False)
 
 print("DataFrame with best-matched buckets has been saved to CLMBS_student_listings_with_buckets.csv.")
