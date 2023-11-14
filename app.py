@@ -271,7 +271,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
         username = request.form['username']
@@ -295,7 +295,7 @@ def register():
         user = User(user_id, username)
         login_user(user)
 
-        return redirect(url_for('job_list'))
+        return redirect(url_for('home'))
 
     return render_template('register.html')
 
