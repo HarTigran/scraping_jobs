@@ -25,5 +25,5 @@ jobs:
 
     - name: Run Scrapy spider
       run: |
-        scrapy crawl job_post_spider
+        scrapy crawl job_post_spider -o job_list_scrapy.csv
       working-directory: ./job_post
