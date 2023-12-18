@@ -24,7 +24,7 @@ jobs:
         pip install scrapy
 
     - name: Change to Scrapy project directory
-      run: cd job_post
+      run: cd job_post/job_post
 
     - name: Run Scrapy spider
       run: |
