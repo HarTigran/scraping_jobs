@@ -26,4 +26,4 @@ jobs:
     - name: Run Scrapy spider
       run: |
         scrapy crawl job_post_spider
-      working-directory: /workspaces/scraping_jobs/job_post
+      working-directory: ./job_post
