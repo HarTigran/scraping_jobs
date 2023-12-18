@@ -93,9 +93,10 @@ LOG_LEVEL = 'DEBUG'
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+import os
 
 FEEDS = {
-    'job_list_scrapy.csv': {
+    os.path.abspath('job_list_scrapy.csv'): {
         'format': 'csv',
         'overwrite': True,
     },
