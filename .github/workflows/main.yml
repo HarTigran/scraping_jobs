@@ -23,9 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install scrapy
 
-    - name: Change to Scrapy project directory
-      run: cd /workspaces/scraping_jobs/job_post
-
     - name: Run Scrapy spider
       run: |
         scrapy crawl job_post_spider
+      working-directory: /workspaces/scraping_jobs/job_post
