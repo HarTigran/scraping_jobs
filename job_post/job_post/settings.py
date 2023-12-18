@@ -95,7 +95,7 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
 FEEDS = {
-    '/workspaces/scraping_jobs/job_list_scrapy.csv': {
+    './job_list_scrapy.csv': {
         'format': 'csv',
         'overwrite': True,
     },
